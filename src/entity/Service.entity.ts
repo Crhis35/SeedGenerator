@@ -4,11 +4,14 @@ import {
   Entity,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   Property,
 } from '@mikro-orm/core';
 import { Base } from './BaseEntity';
 import { Employee } from './Employee.entity';
+import { HelperTech } from './HelperTech.entity';
 import { Invoice } from './Invoice.entity';
+import { MainTech } from './MainTech.entity';
 import { Section } from './Section.entity';
 import { Vehicle } from './Vehicle.entity';
 
@@ -29,15 +32,29 @@ export class Service extends Base {
   @Property()
   outDate!: Date;
 
-  @ManyToMany(() => Vehicle, (vehicle) => vehicle.service, { owner: true })
-  vehicle = new Collection<Vehicle>(this);
+  @ManyToOne(() => Vehicle)
+  vehicle!: Vehicle;
 
-  @ManyToMany(() => Employee, (employee) => employee.leader, { owner: true })
-  mainTech = new Collection<Employee>(this);
+  // @ManyToMany(() => Employee, (employee) => employee.leader, { owner: true })
+  // mainTech = new Collection<Employee>(this);
 
-  @ManyToMany(() => Employee, (employee) => employee.helper, { owner: true })
-  helpersTech = new Collection<Employee>(this);
+  // @ManyToMany(() => Employee, (employee) => employee.helper, { owner: true })
+  // helpersTech = new Collection<Employee>(this);
 
-  @Property({ type: 'number' })
+  @OneToMany({
+    entity: () => MainTech,
+    mappedBy: 'service',
+    orphanRemoval: true,
+  })
+  mainTech = new Collection<MainTech>(this);
+
+  @OneToMany({
+    entity: () => HelperTech,
+    mappedBy: 'service',
+    orphanRemoval: true,
+  })
+  helpersTech = new Collection<HelperTech>(this);
+
+  @Property({ columnType: 'decimal(10, 2)' })
   price!: number;
 }

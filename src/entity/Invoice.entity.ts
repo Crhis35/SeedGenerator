@@ -20,6 +20,6 @@ export class Invoice extends Base {
   @Property()
   date!: Date;
 
-  @Property()
+  @Property({ columnType: 'decimal(10, 2)' })
   totalValue!: number;
 }

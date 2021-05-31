@@ -1,6 +1,7 @@
-import { Collection, Entity, ManyToMany, Property } from '@mikro-orm/core';
+import { Collection, Entity, OneToMany, Property } from '@mikro-orm/core';
 import { Base } from './BaseEntity';
-import { Service } from './Service.entity';
+import { HelperTech } from './HelperTech.entity';
+import { MainTech } from './MainTech.entity';
 
 @Entity()
 export class Employee extends Base {
@@ -19,12 +20,26 @@ export class Employee extends Base {
   @Property()
   phone!: string;
 
-  @Property({ type: 'number' })
+  @Property({ columnType: 'decimal(10, 2)' })
   salaryByHour!: number;
 
-  @ManyToMany(() => Service, (service) => service.mainTech)
-  leader = new Collection<Service>(this);
+  // @ManyToMany(() => Service, (service) => service.mainTech)
+  // leader = new Collection<Service>(this);
 
-  @ManyToMany(() => Service, (service) => service.helpersTech)
-  helper = new Collection<Service>(this);
+  // @ManyToMany(() => Service, (service) => service.helpersTech)
+  // helper = new Collection<Service>(this);
+
+  @OneToMany({
+    entity: () => MainTech,
+    mappedBy: 'employee',
+    orphanRemoval: true,
+  })
+  leader = new Collection<MainTech>(this);
+
+  @OneToMany({
+    entity: () => HelperTech,
+    mappedBy: 'employee',
+    orphanRemoval: true,
+  })
+  helper = new Collection<HelperTech>(this);
 }

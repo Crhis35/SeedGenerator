@@ -1,8 +1,8 @@
 import {
   Collection,
   Entity,
-  ManyToMany,
   ManyToOne,
+  OneToMany,
   Property,
 } from '@mikro-orm/core';
 import { Base } from './BaseEntity';
@@ -26,6 +26,10 @@ export class Vehicle extends Base {
   @ManyToOne(() => Client)
   client!: Client;
 
-  @ManyToMany(() => Service, (service) => service.vehicle)
+  @OneToMany({
+    entity: () => Service,
+    mappedBy: 'vehicle',
+    orphanRemoval: true,
+  })
   service = new Collection<Service>(this);
 }
